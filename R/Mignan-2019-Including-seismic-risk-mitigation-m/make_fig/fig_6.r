@@ -33,7 +33,7 @@ IPE1 <- function(m,r){
   Rt <- 30
   sigma <- 0.4
   int <- c1+c2*(m-6)+c3*(m-6)^2+c4*log10(r)+c5*r+c6*B+c7*m*log10(r)
-  return(list(median=int, sigma=sigma))
+  return(c(int,sigma))
 }
 #Central/Eastern U.S.A
 IPE2 <- function(m,r){
@@ -57,7 +57,8 @@ IPE3 <- function(m,d){
   a <- -0.69182; b <- 0.00084; alpha <- 0.7317; beta <- 1.2567
   c0 <- beta; c1 <- alpha; c2 <- -alpha*a; c3 <- -alpha*b
   int <- (m-c2*log(d/30)-c3*(d-30)-c0)/c1
-  return(list(median=, sigma=1))
+  sigma<-1
+  return(c(int, sigma))
 } 
 #Global
 IPE4 <- function(m,d){
@@ -72,12 +73,37 @@ IPE4 <- function(m,d){
   #	else int <- c0+c1*m+c2*log(sqrt(d^2+Rm^2))+c4*log(d/50)
   
   int <- c0+c1*m+c2*log(sqrt(d^2+Rm^2))+c4*log(d/50)
-  indnear <- which(d <= 50)
-  if(length(indnear) != 0) int[indnear] <- c0+c1*m+c2*log(sqrt(d[indnear]^2+Rm^2))
-  
+
   s1 <- 0.82; s2 <- 0.37; s3 <- 22.9
   sigma <- s1+s2/(1+(d/s3)^2)
-  return(list(median=int, sigma=sigma))
+  return(c(int, sigma))
 }
+dis <- seq(0,50,0.01)
+nD <- length(dis)
 
-for(i in 1:)
+dBetweenI_3 <- array(NA, dim = c(6,nD,5))
+m <- seq(3,7,1)
+z <- seq(4,9,1)
+for(i in 1:5){
+  for (j in 1:6){
+    for( k in 1:nD){
+      dBetweenI_3[j,k,i] <- IPE3(mi[i],sqrt(z[j]^2 +dis[k]^2))[1];
+    }
+  }
+}
+dBetweenI_4 <- array(NA, dim = c(6,nD)
+
+for(i in 1:6){
+  
+}
+      dBetweenI_4[j,k] <- IPE4(6,sqrt(z[j]^2 +dis[k]^2))[1];
+    
+
+
+        #if(i == 1) dBetweenI[i,j] <- IPE1()[1];
+        #if(i == 2) dBetweenI[i,j] <- IPE2()[1];
+        #if(i == 4) dBetweenI[i,j] <- IPE4()[1];
+
+library(ggplot2)
+ggplot(data=data.frame(y=dBetweenI[3,],x=seq(0, 50, 0.01)), aes(x=x,y=y)) +
+  geom_line(col="darkorange")
