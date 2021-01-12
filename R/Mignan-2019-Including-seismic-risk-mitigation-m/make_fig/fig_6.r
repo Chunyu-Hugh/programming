@@ -1,25 +1,15 @@
+list(rm = ls())
 library(ggplot2)
+#这是a�?
 x <- c(-2.6, -3.2, -2.0, -1.4, -2.4, -3.8, - 3.1, -0.5, -0.9, 0.1, -4.2, -2.8, -1.6)
 y <- c(0.7,  0.8,  1.4, 0.9, 1.1, 2.2, 1.8, 1.1, 0.8, 1.6, 1.1, 0.8 ,1.0)
-ggplot(data = data.frame(a = x, b = y), aes(x=a, y=b))+
+g1<-ggplot(data = data.frame(a = x, b = y), aes(x=a, y=b))+
 geom_point()+
 labs(title = "(a) Underground feedback", x = expression(a(m^-3)))+
-theme(plot.title = element_text(hjust = 0.5))  #也就加上这一行
+theme(plot.title = element_text(hjust = 0.5))  #也就加上这一�?
 
 
-
-
-#b图
-library(ggplot2)
-
-x2 <- seq(0,1,0.001)*1e8
-y2 <- 2*log10(3.10e10*x2)/3 -10.7 +14/3
-ggplot(data = data.frame(x2 = x2,y2 = y2),aes(x=x2,y=y2))+
-geom_line()
-
-
-#c图
-
+#这是c�?
 #California
 IPE1 <- function(m,r){
   #Atkinson and Wald, 2007 - California
@@ -32,6 +22,7 @@ IPE1 <- function(m,r){
   c7 <- -0.577
   Rt <- 30
   sigma <- 0.4
+  B <- log10(r/Rt)
   int <- c1+c2*(m-6)+c3*(m-6)^2+c4*log10(r)+c5*r+c6*B+c7*m*log10(r)
   return(c(int,sigma))
 }
@@ -47,8 +38,9 @@ IPE2 <- function(m,r){
   c7 <- -0.479
   Rt <- 80
   sigma <- 0.4
+  B <- log10(r/Rt)
   int <- c1+c2*(m-6)+c3*(m-6)^2+c4*log10(r)+c5*r+c6*B+c7*m*log10(r)
-  return(list(median=int, sigma=sigma))
+  return(c(int, sigma))
 }
 #Switzerland
 IPE3 <- function(m,d){
@@ -78,32 +70,85 @@ IPE4 <- function(m,d){
   sigma <- s1+s2/(1+(d/s3)^2)
   return(c(int, sigma))
 }
-dis <- seq(0,50,0.01)
-nD <- length(dis)
 
-dBetweenI_3 <- array(NA, dim = c(6,nD,5))
-m <- seq(3,7,1)
-z <- seq(4,9,1)
-for(i in 1:5){
-  for (j in 1:6){
-    for( k in 1:nD){
-      dBetweenI_3[j,k,i] <- IPE3(mi[i],sqrt(z[j]^2 +dis[k]^2))[1];
+#需要循环进行取�?
+#输入参数
+dis <- seq(0,80,0.01)
+nDis <- length(dis)
+I <- array(NA, dim = c(4,nDis))
+re <- c(0,0)
+si <- c(rep(0,4))
+for(i in 1:4){
+  for(j in 1:nDis){
+    if(i == 1){
+      re <- IPE1(6.5,sqrt(4^2+dis[j]^2))
+      I[i,j] <- re[1]
+      if(j == nDis){
+        si[i] = re[2]
+      }
+    }
+    if(i == 2){
+      re <- IPE2(7,sqrt(4^2+dis[j]^2))
+      I[i,j] <- re[1]
+      if(j == nDis){
+        si[i] = re[2]
+      }
+    } 
+    if(i == 3){
+      re <- IPE3(6,sqrt(4^2+dis[j]^2))
+      I[i,j] <- re[1]
+      if(j == nDis){
+        si[i] = re[2]
+      }
+    } 
+    if(i == 4){
+      re <- IPE4(6,sqrt(4^2+dis[j]^2))
+      I[i,j] <- re[1]
+      if(j == nDis){
+        si[i] = re[2]
+      }
     }
   }
 }
-dBetweenI_4 <- array(NA, dim = c(6,nD)
 
-for(i in 1:6){
+type <- c(rep("California",nDis),rep("Central/Eastern U.S.A",nDis),rep("Switzerland",nDis),rep("Global",nDis))
+
+
+g2 <- ggplot(data=data.frame(x = seq(0,50,0.01), y =I[1,] ), aes(x=x,y=y)) +
+  geom_line(col = "green")+
+  geom_ribbon(aes(ymin = I[1,]*(1-si[1]), ymax= I[1,]*(1+si[1])),alpha=.3, fill="orange")+
+
+  geom_line(data=data.frame(x = seq(0,50,0.01), y =I[2,] ), aes(x=x,y=y),col = "darkred")+
+  geom_ribbon(aes(ymin = I[2,]*(1-si[2]), ymax = I[2,]*(1+si[2])),alpha=.3, fill="#00f7ff")+
+
+  geom_line(data=data.frame(x = seq(0,50,0.01), y =I[3,] ), aes(x=x,y=y),col = "blue")+
+  geom_ribbon(aes(ymin = I[3,]*(1-si[3]), ymax = I[3,]*(1+si[3])),alpha=.3, fill="#09e44b")+
+
+  geom_line(data=data.frame(x = seq(0,50,0.01), y =I[4,] ), aes(x=x,y=y),col = "black")
+  geom_ribbon(aes(ymin = I[4,]*(1-si[4]), ymax = I[4,]*(1+si[4])),alpha=.3, fill="#C8FF00")+
+
+  labs(title = "(c) Shaking intensity", x = "d (km)", y = "I")+
+  ylim(min=0,max=10)+
+  theme(plot.title = element_text(hjust = 0.5))
   
+mean_I <- c(rep(0,nDis))
+for(i in 1:nDis){
+  mean_I[i] <- mean(I[,i])
 }
-      dBetweenI_4[j,k] <- IPE4(6,sqrt(z[j]^2 +dis[k]^2))[1];
-    
+muD1 <- (1 + tanh( (mean_I +6.25*.9-13.1)/2.3))*2.5
+muD2 <- (1 + tanh( (mean_I +6.25*.75-13.1)/2.3))*2.5
+muD3 <- (1 + tanh( (mean_I +6.25*.6-13.1)/2.3))*2.5
+muD4 <- (1 + tanh( (mean_I +6.25*.4-13.1)/2.3))*2.5
+data <-data.frame(x = rep(mean_I,4), y = c(muD1,muD2,muD3,muD4),type1 = c(rep(dis, 4)))
+g3 <- ggplot(data)+
+  geom_line(aes(x = x,y =y, col = type1))
+  #geom_line(data = data.frame(x = mean_I, y = muD2), aes(x = x,y =y),col = "red")+
+  #geom_line(data = data.frame(x = mean_I, y = muD3), aes(x = x,y =y),col = "green")+
+  #geom_line(data = data.frame(x = mean_I, y = muD4), aes(x = x,y =y),col = "yellow")+
+  #scale_colour_discrete(breaks = c('A','B','C','D'), labels = c('W','X','Y','Z'))
 
 
-        #if(i == 1) dBetweenI[i,j] <- IPE1()[1];
-        #if(i == 2) dBetweenI[i,j] <- IPE2()[1];
-        #if(i == 4) dBetweenI[i,j] <- IPE4()[1];
 
-library(ggplot2)
-ggplot(data=data.frame(y=dBetweenI[3,],x=seq(0, 50, 0.01)), aes(x=x,y=y)) +
-  geom_line(col="darkorange")
+
+
+

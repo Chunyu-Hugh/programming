@@ -229,8 +229,8 @@ Beckers.price <- read.csv(file=paste(wd, "/fig5_Beckers.csv", sep=""), header=T)
 
 ggplot(data=data.frame(x=z*1e-3,y=Pnet_z[,3]*1e-6), aes(x=x,y=y)) +
   geom_line(col="darkorange") +
-  geom_ribbon(ymin=Pnet_z[,2]*1e-6, ymax=Pnet_z[,4]*1e-6, alpha=.3, fill="orange") +
-  geom_ribbon(ymin=Pnet_z[,1]*1e-6, ymax=Pnet_z[,5]*1e-6, alpha=.3, fill="orange") +
+  geom_ribbon(aes(ymin=Pnet_z[,2]*1e-6, ymax=Pnet_z[,4]*1e-6), alpha=.3, fill="orange") +
+  geom_ribbon(aes(ymin=Pnet_z[,1]*1e-6, ymax=Pnet_z[,5]*1e-6), alpha=.3, fill="orange") +
   geom_point(data=ref.Pnet, aes(col=model), col="coral1") +
   theme_minimal() +
   theme(legend.position="none") +
