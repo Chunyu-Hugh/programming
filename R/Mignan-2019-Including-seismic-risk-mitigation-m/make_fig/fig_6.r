@@ -9,7 +9,7 @@ labs(title = "(a) Underground feedback", x = expression(a(m^-3)))+
 theme(plot.title = element_text(hjust = 0.5))  #也就加上这一�?
 
 
-#这是c�?
+
 #California
 IPE1 <- function(m,r){
   #Atkinson and Wald, 2007 - California

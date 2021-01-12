@@ -1,4 +1,5 @@
 library(ggplot2)
+library(gridExtra)
 rho.T <- function( T ) return(1030 - 0.1625 * T - 0.00269 * T ^ 2 )
 h.T <- function(T, cw) return((T+273)*cw)   
 mu.T <- function(T) return(343.18e-7*10^(247.8/(T.inj+140))) 
@@ -64,7 +65,10 @@ for(i in 1:2){
 }
 
 
-##在这里开始绘图
+##在这里开始绘�?
+
+
+
 distance <- "z(km)"
 type <- rep(c(4:9),each = length(V.inj))
 x_value <- rep(seq(0,0.4,0.001),times = 6)

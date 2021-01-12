@@ -159,7 +159,7 @@ pdf(paste(wd, "/", figd, "/fig3_heatdistrict.pdf", sep=""))
 g1 <- ggplot(data=data.frame(x=rep(z,3)*1e-3, y=c(E.th,E.el,E.DH0)*1e-6, id=c(rep("Eth",nz), rep("Eel",nz), rep("EDH,0",nz)))) +
   geom_line(aes(x=x, y=y, group=id, lty=id)) +
   theme_minimal() +
-  labs(title = "(a)", x = "z (km)", y = "Power (MW)", lty="Split")
+  labs(title = "(a)", x = "z (km)", y = "E (MW)", lty="Split")
 #get!
 zi <- seq(4,9)
 nzi <- length(zi)
