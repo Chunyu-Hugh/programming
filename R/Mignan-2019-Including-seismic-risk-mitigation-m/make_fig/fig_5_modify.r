@@ -176,6 +176,8 @@ for(i in 1:nz) for(rdm in 1:nrdm) {
   E.comb[i,rdm,] <- E.EGS[i,rdm] + En.DH[i,rdm,]/3
   C.comb[i,rdm,] <- C.EGS[i,rdm] + C.DH[i,rdm,]
   P.comb[i,rdm,] <- C.comb[i,rdm,]/E.comb[i,rdm,]
+
+
 }
 
 Pnet_z <- array(NA, dim=c(nz,5))
@@ -223,9 +225,8 @@ P3.TASwiss <- C3.TASwiss*1e6 / (24*1e6*30)
 P.GETEM <- C.GETEM*1e6 / (100*1e6*30)
 ref.Price2 <- data.frame(x=c(5,6,5, 6), y=c(P1.TASwiss,P2.TASwiss,P3.TASwiss, P.GETEM)*1e2, model=c(rep("TASwiss",3), "GETEM"))
 
-Beckers.price <- read.csv(file=paste(wd, "/fig5_Beckers.csv", sep=""), header=T)
-
-pdf(paste(wd, "/", figd, "/fig4_pricing.pdf", sep=""))
+#Beckers.price <- read.csv(file=paste(wd, "/fig5_Beckers.csv", sep=""), header=T)
+pdf(file="fig5.pdf",family="Times",pointsize=16)
 g1 <- ggplot(data=data.frame(x=z*1e-3,y=Pnet_z[,3]*1e-6), aes(x=x,y=y)) +
   geom_line(col="darkorange") +
   geom_ribbon(aes(ymin=Pnet_z[,2]*1e-6, ymax=Pnet_z[,4]*1e-6), alpha=.3, fill="orange") +
@@ -234,7 +235,7 @@ g1 <- ggplot(data=data.frame(x=z*1e-3,y=Pnet_z[,3]*1e-6), aes(x=x,y=y)) +
   theme_minimal() +
   theme(legend.position="none") +
   labs(title="(a)", x="z (km)", y=expression(paste(E[el], " (MW)")))
-g2 <- ggplot(data=data.frame(x=z*1e-3,y=costs.well_z[,3]*1e-6), aes(x=x,y=y)) +
+  g2 <- ggplot(data=data.frame(x=z*1e-3,y=costs.well_z[,3]*1e-6), aes(x=x,y=y)) +
   geom_line(col="darkorange") +
   geom_ribbon(aes(ymin=costs.well_z[,2]*1e-6, ymax=costs.well_z[,4]*1e-6), alpha=.3, fill="orange") +
   geom_ribbon(aes(ymin=costs.well_z[,1]*1e-6, ymax=costs.well_z[,5]*1e-6), alpha=.3, fill="orange") +
@@ -261,21 +262,11 @@ g4 <- ggplot(data=data.frame(x=z*1e-3,y=price_z[,3]*1e2), aes(x=x,y=y)) +
   geom_ribbon(aes(ymin=price.combL0_z[,2]*1e2, ymax=price.combL0_z[,4]*1e2), alpha=.5, fill="red") +
 #  geom_ribbon(ymin=price.combL0_z[,1]*1e2, ymax=price.combL0_z[,5]*1e2, alpha=.3, fill="red") +
   geom_point(data=ref.Price2, aes(col=model), col="coral1") +
-  geom_line(data=Beckers.price, aes(x=z_km, y=LCOE_c_kWh), col="coral1", lty="dashed") +
   xlim(min=4, max=9) +
   ylim(min=0, max=20) +
   theme_minimal() +
   theme(legend.position="none") +
   labs(title="(d)", x="z (km)", y="P (c/kWh)")
 
-grid.arrange(g1,g2,g3,g4, ncol=2, nrow=2)
-dev.off()
-
-
-
-
-
-
-
-
-print("DONE")
+  grid.arrange(g1, g2, g3, g4, ncol = 1, nrow = 4)
+  dev.off()
