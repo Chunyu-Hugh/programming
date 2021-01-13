@@ -1,5 +1,6 @@
 list(rm = ls())
 library(ggplot2)
+library(gridExtra)
 
 x1 <- c(-2.6, -3.2, -2.0, -3.8, -3.1, -0.5, -0.9, -4.2)
 y1 <- c(0.7, 0.8, 1.4, 2.2, 1.8, 1.1, 0.8, 1.1)
@@ -12,6 +13,7 @@ t2 <- c(rep("M&al17", length(x2)))
 d2 <- data.frame(a = x2, b = y2, t = t2)
 
 datax <- merge(d1, d2, all = TRUE)
+pdf(file="fig6.pdf",family="Times",pointsize=16)
 g1 <- ggplot(data = datax, aes(x = a, y = b, group = t, col = t)) +
   geom_point(size = 2) +
   labs(
@@ -140,26 +142,11 @@ cI <- c(I[1, ], I[2, ], I[3, ], I[4, ])
 data_Shaking <- data.frame(d = seq(0, 80, 0.01), cI = cI, type = type)
 g2 <- ggplot() +
   geom_line(data = data_Shaking, aes(x = d, y = cI, group = type, col = type)) +
-  #geom_ribbon(aes(x = seq(0, 80, 0.01),ymin = I[1, ] * (1 - si[1]), ymax = I[1, ] * (1 + si[1]),type = "California"),  alpha = .3, fill = "orange")
-
-
-
-
-g2 <- ggplot(data = data.frame(x = seq(0, 80, 0.01), y = I[1, ]), aes(x = x, y = y)) +
-  geom_line(col = "green") +
-  geom_ribbon(aes(ymin = I[1, ] * (1 - si[1]), ymax = I[1, ] * (1 + si[1])), alpha = .3, fill = "orange") +
-
-  # geom_line(data = data.frame(x = seq(0, 80, 0.01), y = I[2, ]), aes(x = x, y = y), col = "darkred") +
-  geom_ribbon(aes(ymin = I[2, ] * (1 - si[2]), ymax = I[2, ] * (1 + si[2])), alpha = .3, fill = "#00f7ff") +
-
-  # geom_line(data = data.frame(x = seq(0, 80, 0.01), y = I[3, ]), aes(x = x, y = y), col = "blue") +
-  geom_ribbon(aes(ymin = I[3, ] * (1 - si[3]), ymax = I[3, ] * (1 + si[3])), alpha = .3, fill = "#09e44b") +
-
-  # geom_line(data = data.frame(x = seq(0, 80, 0.01), y = I[4, ]), aes(x = x, y = y), col = "black") +
-  geom_ribbon(aes(ymin = I[4, ] * (1 - si[4]), ymax = I[4, ] * (1 + si[4])), alpha = .4, fill = "#C8FF00") +
   labs(title = "(c) Shaking intensity", x = "d (km)", y = "I", col = "Region") +
-  ylim(min = 0, max = 10) +
+  ylim(min = 0, max = 9) +
   theme(plot.title = element_text(hjust = 0.5))
+#  geom_ribbon(aes(x = seq(0, 80, 0.01),ymin = I[1, ] * (1 - si[1]), ymax = I[1, ] * (1 + si[1]),type = "California"),  alpha = .3, fill = "orange")
+
 
 mean_I <- c(rep(0, nDis))
 for (i in 1:nDis) {
@@ -176,3 +163,5 @@ g3 <- ggplot(data) +
 # geom_line(data = data.frame(x = mean_I, y = muD3), aes(x = x,y =y),col = "green")+
 # geom_line(data = data.frame(x = mean_I, y = muD4), aes(x = x,y =y),col = "yellow")+
 # scale_colour_discrete(breaks = c('A','B','C','D'), labels = c('W','X','Y','Z'))
+grid.arrange(g1,g2,g3, ncol = 1, nrow = 3)
+dev.off()
