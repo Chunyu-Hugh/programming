@@ -154,7 +154,8 @@ DH.gg <- data.frame(grid, E.DH=E.DH.gg*1e-6, E.DH.eco=E.DH.eco.gg*1e-6, E.el=E.e
 
 
 ##下面是画图
-pdf(file="fig3.pdf",family="Times",pointsize=16)
+set_font(p, family="Times", 
+    fontface="italic", color="firebrick", size=5)
 #get!
 g1 <- ggplot(data=data.frame(x=rep(z,3)*1e-3, y=c(E.th,E.el,E.DH0)*1e-6, id=c(rep("Eth",nz), rep("Eel",nz), rep("EDH,0",nz)))) +
   geom_line(aes(x=x, y=y, group=id, lty=id)) +
@@ -205,7 +206,8 @@ g4 <- ggplot(data=DH.gg, aes(x=x*1e-3, y=-y*1e-3)) +
 #  theme(legend.position="none") +
   labs(title = "(d)", x = "L (km)", y = "z (km)", fill=expression(paste(E[DH], " (MW)"), sep=""))
 
-grid.arrange(g1,g2,g3, ncol=1, nrow=3)
+g5<- grid.arrange(g1,g2,g3, ncol=1, nrow=3)
+ggsave(file = "fig4.eps",g5,units = "cm")
 dev.off()
 
 

@@ -227,7 +227,6 @@ for (i in 1:nz)
   ref.Price2 <- data.frame(x = c(5, 6, 5, 6), y = c(P1.TASwiss, P2.TASwiss, P3.TASwiss, P.GETEM) * 1e2, model = c(rep("TASwiss", 3), "GETEM"))
 
   #Beckers.price <- read.csv(file=paste(wd, "/fig5_Beckers.csv", sep=""), header=T)
-  pdf(file = "fig5.pdf", family = "Times", pointsize = 16)
   g1 <- ggplot(data = data.frame(x = z * 1e-3, y = Pnet_z[, 3] * 1e-6), aes(x = x, y = y)) +
   geom_line(col = "darkorange") +
   geom_ribbon(aes(ymin = Pnet_z[, 2] * 1e-6, ymax = Pnet_z[, 4] * 1e-6), alpha = .3, fill = "orange") +
@@ -269,6 +268,8 @@ for (i in 1:nz)
   theme(legend.position = "none") +
   labs(title = "(d)", x = "z (km)", y = "P (c/kWh)")
 
-  grid.arrange(g1, g2, g3, g4, ncol = 1, nrow = 4)
+  g5 <- grid.arrange(g1, g2, g3, g4, ncol = 1, nrow = 4)
+  ggsave(file = "fig5.eps", g5,weight = 10,units = "cm")
+
   dev.off()
   

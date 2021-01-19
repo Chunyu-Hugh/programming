@@ -158,10 +158,13 @@ muD3 <- (1 + tanh((mean_I + 6.25 * .6 - 13.1) / 2.3)) * 2.5
 muD4 <- (1 + tanh((mean_I + 6.25 * .4 - 13.1) / 2.3)) * 2.5
 data <- data.frame(I = rep(mean_I, 4), D = c(muD1, muD2, muD3, muD4), Building_class = c(rep("A", nDis), rep("B", nDis), rep("C", nDis), rep("D", nDis)))
 g3 <- ggplot(data) +
-  geom_smooth(aes(x = I, y = D, group = Building_class, col = Building_class))
+  geom_smooth(aes(x = I, y = D, group = Building_class, col = Building_class))+
+  labs(title = "(d) Mean damage",  y = expression(symbol(m)[D]), x = "I", col = "Region") +
+  theme(plot.title = element_text(hjust = 0.5))
 # geom_line(data = data.frame(x = mean_I, y = muD2), aes(x = x,y =y),col = "red")+
 # geom_line(data = data.frame(x = mean_I, y = muD3), aes(x = x,y =y),col = "green")+
 # geom_line(data = data.frame(x = mean_I, y = muD4), aes(x = x,y =y),col = "yellow")+
 # scale_colour_discrete(breaks = c('A','B','C','D'), labels = c('W','X','Y','Z'))
-grid.arrange(g1,g2,g3, ncol = 1, nrow = 3)
+g5 <- grid.arrange(g1,g2,g3, ncol = 1, nrow = 3)
+ggsave("fig6.eps",g5)
 dev.off()
