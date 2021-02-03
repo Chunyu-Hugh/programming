@@ -176,6 +176,8 @@ for(i in 1:nz) for(rdm in 1:nrdm) {
   E.comb[i,rdm,] <- E.EGS[i,rdm] + En.DH[i,rdm,]/3
   C.comb[i,rdm,] <- C.EGS[i,rdm] + C.DH[i,rdm,]
   P.comb[i,rdm,] <- C.comb[i,rdm,]/E.comb[i,rdm,]
+
+
 }
 
 Pnet_z <- array(NA, dim=c(nz,5))
@@ -228,16 +230,16 @@ Beckers.price <- read.csv(file=paste(wd, "/fig5_Beckers.csv", sep=""), header=T)
 pdf(paste(wd, "/", figd, "/fig4_pricing.pdf", sep=""))
 g1 <- ggplot(data=data.frame(x=z*1e-3,y=Pnet_z[,3]*1e-6), aes(x=x,y=y)) +
   geom_line(col="darkorange") +
-  geom_ribbon(aes(ymin=Pnet_z[,2]*1e-6, ymax=Pnet_z[,4]*1e-6), alpha=.3, fill="orange") +
-  geom_ribbon(aes(ymin=Pnet_z[,1]*1e-6, ymax=Pnet_z[,5]*1e-6), alpha=.3, fill="orange") +
+  geom_ribbon(ymin=Pnet_z[,2]*1e-6, ymax=Pnet_z[,4]*1e-6, alpha=.3, fill="orange") +
+  geom_ribbon(ymin=Pnet_z[,1]*1e-6, ymax=Pnet_z[,5]*1e-6, alpha=.3, fill="orange") +
   geom_point(data=ref.Pnet, aes(col=model), col="coral1") +
   theme_minimal() +
   theme(legend.position="none") +
   labs(title="(a)", x="z (km)", y=expression(paste(E[el], " (MW)")))
 g2 <- ggplot(data=data.frame(x=z*1e-3,y=costs.well_z[,3]*1e-6), aes(x=x,y=y)) +
   geom_line(col="darkorange") +
-  geom_ribbon(aes(ymin=costs.well_z[,2]*1e-6, ymax=costs.well_z[,4]*1e-6), alpha=.3, fill="orange") +
-  geom_ribbon(aes(ymin=costs.well_z[,1]*1e-6, ymax=costs.well_z[,5]*1e-6), alpha=.3, fill="orange") +
+  geom_ribbon(ymin=costs.well_z[,2]*1e-6, ymax=costs.well_z[,4]*1e-6, alpha=.3, fill="orange") +
+  geom_ribbon(ymin=costs.well_z[,1]*1e-6, ymax=costs.well_z[,5]*1e-6, alpha=.3, fill="orange") +
   geom_point(data=ref.Well, aes(col=model), col="coral1") +
   geom_line(data=data.frame(x=z*1e-3, y=(1.72e-7*z^2+2.3e-3*z-0.62)), aes(x=x,y=y), lty="dashed") +
   geom_line(data=data.frame(x=z*1e-3, y=2*(1.72e-7*z^2+2.3e-3*z-0.62)), aes(x=x,y=y), lty="dashed") +
@@ -247,18 +249,18 @@ g2 <- ggplot(data=data.frame(x=z*1e-3,y=costs.well_z[,3]*1e-6), aes(x=x,y=y)) +
        y=expression(paste(C[well], " (M$)")))
 g3 <- ggplot(data=data.frame(x=z*1e-3,y=costs_z[,3]*1e-6), aes(x=x,y=y)) +
   geom_line(col="darkorange") +
-  geom_ribbon(aes(ymin=costs_z[,2]*1e-6, ymax=costs_z[,4]*1e-6), alpha=.3, fill="orange") +
-  geom_ribbon(aes(ymin=costs_z[,1]*1e-6, ymax=costs_z[,5]*1e-6), alpha=.3, fill="orange") +
+  geom_ribbon(ymin=costs_z[,2]*1e-6, ymax=costs_z[,4]*1e-6, alpha=.3, fill="orange") +
+  geom_ribbon(ymin=costs_z[,1]*1e-6, ymax=costs_z[,5]*1e-6, alpha=.3, fill="orange") +
   geom_point(data=ref.Cost, aes(col=model), col="coral1") +
   theme_minimal() +
   theme(legend.position="none") +
   labs(title="(c)", x="z (km)", y=expression(paste(C[EGS], " (million $)")))
 g4 <- ggplot(data=data.frame(x=z*1e-3,y=price_z[,3]*1e2), aes(x=x,y=y)) +
   geom_line(col="darkorange") +
-  geom_ribbon(aes(ymin=price_z[,2]*1e2, ymax=price_z[,4]*1e2), alpha=.5, fill="orange") +
+  geom_ribbon(ymin=price_z[,2]*1e2, ymax=price_z[,4]*1e2, alpha=.5, fill="orange") +
 #  geom_ribbon(ymin=price_z[,1]*1e2, ymax=price_z[,5]*1e2, alpha=.3, fill="blue") +
   geom_line(data=data.frame(x=z*1e-3,y=price.combL0_z[,3]*1e2), aes(x=x,y=y), col="darkred") +
-  geom_ribbon(aes(ymin=price.combL0_z[,2]*1e2, ymax=price.combL0_z[,4]*1e2), alpha=.5, fill="red") +
+  geom_ribbon(ymin=price.combL0_z[,2]*1e2, ymax=price.combL0_z[,4]*1e2, alpha=.5, fill="red") +
 #  geom_ribbon(ymin=price.combL0_z[,1]*1e2, ymax=price.combL0_z[,5]*1e2, alpha=.3, fill="red") +
   geom_point(data=ref.Price2, aes(col=model), col="coral1") +
   geom_line(data=Beckers.price, aes(x=z_km, y=LCOE_c_kWh), col="coral1", lty="dashed") +
