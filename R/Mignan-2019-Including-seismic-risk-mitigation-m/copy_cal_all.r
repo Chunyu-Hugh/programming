@@ -881,7 +881,7 @@ for (i in 1:nz)
       #how many times in circle per settlement
       count_inriskcircle_persettlement <- numeric(ns)
       for (i in 1:nEGS) {
-        #风险圆
+        #风险圆，得到了圆的数据框
         circle_risk <- circle(c(X$x[i], X$y[i]), radius)
         for (j in 1:ns) { #
           indb <- which(map$sector == j & is.na(map$LCOE1) == T)
@@ -904,28 +904,33 @@ for (i in 1:nz)
     siting.map2 <- subset(siting.map, LCOE2 < price_target) # 价格2 小于目标价格
     radius1 <- d31best # 34
     radius2 <- d32best # 13
-    lim1 <- nrow(siting.map1)
-    lim2 <- nrow(siting.map2)
+    lim1 <- nrow(siting.map1) # 10782
+    lim2 <- nrow(siting.map2) # 19634
 
     #norm 1mmt
     # 在这里运行第一遍的rdm
-    lim <- lim1
+    lim <- lim1 # 10782
     radius <- radius1 # 34
-    indloc_tmp <- which(siting.map1$LCOE1 == min(siting.map1$LCOE1)) #9
+    indloc_tmp <- which(siting.map1$LCOE1 == min(siting.map1$LCOE1)) #返回下标
     # 向上取整
-    rdm <- ceiling(runif(1) * length(indloc_tmp))
+    rdm <- ceiling(runif(1) * length(indloc_tmp))# 随机的一个数字
     indloc <- indloc_tmp[rdm]
+
+    #以上可以得到等与最小值的下标
     # X_EGS写入data_frame x, y
     X_EGS <- data.frame(x = siting.map1$x[indloc], y = siting.map1$y[indloc])
+    # EGSsector 是这个下标下的数字
     EGSsector <- siting.map1$sector[indloc]
     for (i in 2:nEGS.max) { # 2:38
       # 进行到哪一步了
       print(paste(i, "/", nEGS.max))
+      # 除过这里的值，其余的值小于其余最小的值得下标
       indloc_tmp <- which(siting.map1$LCOE1[-indloc] == min(siting.map1$LCOE1[-indloc]))
       rdm <- ceiling(runif(1) * length(indloc_tmp))
       indloc_tmp <- indloc_tmp[rdm]
-      
+
       X_EGS_tmp <- rbind(X_EGS, data.frame(x = siting.map1$x[-indloc][indloc_tmp], y = siting.map1$y[-indloc][indloc_tmp]))
+      
       indloc <- c(indloc, seq(nrow(siting.map1))[-indloc][indloc_tmp])
       # 如果输出是nogo 且indloc的长度小于lim，在内部进行计算之后继续判断
       while (count_circle(X_EGS_tmp, siting.map, radius) == "nogo" & length(indloc) < lim) {
@@ -1007,6 +1012,7 @@ for (i in 1:nz)
       coords <- circle(c(X_EGS1$x[i], X_EGS1$y[i]), radius1)
       riskinit_zones <- rbind(riskinit_zones, data.frame(x = coords$x, y = coords$y, id = rep(i, 100)))
     }
+
     gA <- ggplot(data = siting.map, aes(x = x, y = y)) +
     geom_raster(aes(fill = LCOE1)) +
     geom_point(data = X_EGS1, pch = 3) +
@@ -1065,7 +1071,7 @@ for (i in 1:nz)
 
 
 
-
+  # 差分进化算法
 
   ######################### differential evolution algo ########################
   ## COST FUNCTION ##
