@@ -1071,6 +1071,9 @@ for (i in 1:nz)
 
 
 
+
+
+
   # 差分进化算法
 
   ######################### differential evolution algo ########################
@@ -1079,9 +1082,11 @@ for (i in 1:nz)
     nEGS <- dim(X)[2]
 
     #extract settlements
-    indb <- which(map$sector == testID & is.na(map$LCOE1) == T)
+    # 返回下标
+    indb <- which(map$sector == testID & is.na(map$LCOE1) == T) 
     Xsettlement <- data.frame(x = map$x[indb], y = map$y[indb], dens = map$dens[indb])
     nb <- sum(Xsettlement$dens)
+    # 最大sector
     ns <- max(map$sector)
 
     #cost parameters
@@ -1100,6 +1105,7 @@ for (i in 1:nz)
     }
     indtoorisky <- which(count_inriskcircle_persettlement > 1)
     if (length(indtoorisky) == 0) riskthreshold <- 0 else riskthreshold <- Inf
+    # 要让风险等于0 才是最优化的算法
 
     val <- (Power_settlement - sum(X[3,])) + riskthreshold
     return(val)
@@ -1110,6 +1116,7 @@ for (i in 1:nz)
   testID <- 2 # only for sector 2 for now
 
   ## PARAMETERS ##
+  # 去除唯一性
   nEGS <- unique(siting.map$nEGS[siting.map$sector == testID])
   if (safetynorm == 1) {
     indloc <- which(siting.map$sector == testID & siting.map$LCOE1 < price_target)
@@ -1124,17 +1131,19 @@ for (i in 1:nz)
   NP <- 10 * nEGS #number of population members
   Fcrit <- sqrt((1 - Cr / 2) / NP)
   FF <- 0.5
-
   X_EGS <- array(NA, dim = c(NP, ngen, 3, nEGS))
   cost <- array(NA, dim = c(NP, ngen))
 
   ### init (gen = 1) ###
+  # 第一代
   for (i in 1:NP) {
     rdm <- ceiling(runif(nEGS) * length(indloc))
     X_EGS[i, 1, 1,] <- siting.map$x[indloc][rdm] #x - random uniform in possible space
     X_EGS[i, 1, 2,] <- siting.map$y[indloc][rdm] #y - random uniform in possible space
     X_EGS[i, 1, 3,] <- rep(plant_power, nEGS) #power in MW - best option
-    cost[i, 1] <- costfunction(X_EGS[1,,], siting.map, testID, radius_risk)
+    # 进化有问题，维度改变，不知道用的是谁
+    # 直接算出适应度函数，看是否符合条件
+    cost[i, 1] <- costfunction(X_EGS[1,,,], siting.map, testID, radius_risk)
   }
 
   ### evolution (gen > 1) ###
@@ -1142,6 +1151,7 @@ for (i in 1:nz)
     # trial populations
     for (i in 1:NP) {
       jrdm <- ceiling(runif(1) * nEGS)
+      # 向上取整
       indrdm1 <- ceiling(runif(1) * NP);
       while (indrdm1 == i)
         indrdm1 <- ceiling(runif(1) * NP)
@@ -1155,6 +1165,7 @@ for (i in 1:nz)
       # generate trial vectors
       for (j in 1:nEGS) {
         # mutation
+        # 变异操作
         V <- numeric(3)
         V[1] <- X_EGS[indrdm1, g - 1, 1, j] + FF * (X_EGS[indrdm2, g - 1, 1, j] - X_EGS[indrdm3, g - 1, 1, j]) #x
         V[2] <- X_EGS[indrdm1, g - 1, 2, j] + FF * (X_EGS[indrdm2, g - 1, 2, j] - X_EGS[indrdm3, g - 1, 2, j]) #y
