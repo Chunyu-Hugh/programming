@@ -12,8 +12,8 @@ library(splancs) #inpip()
 
 
 #SETUP
-#使其在R这个文件夹下面进行运算
-wd <- paste(getwd(), "/R", sep = "")
+#使其在R这个文件夹下面进行运�?
+wd <- paste(getwd(), sep = "")
 outd <- "outputs"
 if (!file.exists(outd)) dir.create(outd)
 figd <- "figures"
@@ -25,9 +25,9 @@ if (!file.exists(figd)) dir.create(figd)
 rho.T <- function(T) return(1030 - 0.1625 * T - 0.00269 * T ^ 2) #kg/m3
 h.T <- function(T, cw) return((T + 273) * cw) #J/kg, T in degree Celsius摄氏温度
 mu.T <- function(T) return(343.18e-7 * 10 ^ (247.8 / (T.inj + 140))) #viscosity McDermott et al. (2006)
-# 计算最值，最合适的值
+# 计算最值，最合适的�?
 # 这个函数是一个高次函数，有固定的求解办法
-# 需要查询2.75次求解办法
+# 需要查�?2.75次求解办�?
 calc_dV.opt <- function(z, I.well, I.res, N.res, eta.el, rho.inj, rho.prod, cw, T0, T.gradient, T.inj, g) {
   a <- -I.well
   b <- -I.res / N.res
@@ -50,7 +50,7 @@ calc_dV.opt <- function(z, I.well, I.res, N.res, eta.el, rho.inj, rho.prod, cw, 
   Vopt <- V0 + DV
   return(Vopt)
 }
-# 这是有一个公式，分段函数寻找需要哪一个值进行计算
+# 这是有一个公式，分段函数寻找需要哪一个值进行计�?
 calc_dV.max <- function(dV.opt, sigma, z, I.res, g, Temp) {
   nu <- 0.25
   Sv <- 2500 * g * z
@@ -117,14 +117,14 @@ nrdm <- 1e4
 # nz <- 6
 # nL <- 81
 # nrdm <- 10000
-# 6行10000列
+# 6�?10000�?
 E.el <- array(NA, dim = c(nz, nrdm))
 Dt.EGS <- array(NA, dim = c(nz, nrdm))
 C.well <- array(NA, dim = c(nz, nrdm))
 C.EGS <- array(NA, dim = c(nz, nrdm))
 E.EGS <- array(NA, dim = c(nz, nrdm))
 P.EGS <- array(NA, dim = c(nz, nrdm))
-# 81个 6行10000列
+# 81�? 6�?10000�?
 E.DH <- array(NA, dim = c(nz, nrdm, nL))
 C.DH <- array(NA, dim = c(nz, nrdm, nL))
 En.DH <- array(NA, dim = c(nz, nrdm, nL))
@@ -133,9 +133,9 @@ C.comb <- array(NA, dim = c(nz, nrdm, nL))
 P.comb <- array(NA, dim = c(nz, nrdm, nL))
 
 for (i in 1:nz)
-  # 6行 深度是4000 5000 6000 7000 8000 9000
+  # 6�? 深度�?4000 5000 6000 7000 8000 9000
   for (rdm in 1:nrdm) {
-    # 1000列
+    # 1000�?
 
     if (type == "doublet") { N.res <- 1; N.inj <- 1; N.prod <- 1; N.well <- 2 }
   if (type == "triplet") { N.res <- 2; N.inj <- 2; N.prod <- 1; N.well <- 3 }
@@ -164,23 +164,23 @@ for (i in 1:nz)
   E.th <- rho.inj * dV.max * (h.prod - h.inj)
   DP.g <- z[i] * g * (rho.inj - rho.prod)
   W.EGS <- (I.well * dV.max ^ 1.75 + I.res / N.res * dV.max - DP.g) * dV.max
-  #第i行 第rdm列的值是啥
+  #第i�? 第rdm列的值是�?
   E.el[i, rdm] <- eta.el * E.th - W.EGS
   #到此为止，产生的电能计算结束
 
 
-  #开始计算价格
+  #开始计算价�?
   C.well.min <- (1.72e-7 * z[i] ^ 2 + 2.3e-3 * z[i] - 0.62) * 1e6 #USD, z in m
-  #钻井价格的数列 第i行 第rdm列 是按照正态分布的随机数
+  #钻井价格的数�? 第i�? 第rdm�? 是按照正态分布的随机�?
   C.well[i, rdm] <- runif(1, min = C.well.min, max = 2 * C.well.min) #USD/well
 
 
   C.plant.min <- 750 + 1125 * exp(-0.006115 * (E.el[i, rdm] * 1e-6 - 5)) #Pnet in MW, cost USD/kW p. 7-14 (251) MIT 2006
-  #建厂价格是按照正态分布的随机数
+  #建厂价格是按照正态分布的随机�?
   C.plant <- runif(1, min = C.plant.min, max = 2 * C.plant.min)
 
 
-  #钻井价格的数列 第i行 第rdm列 是按照正态分布的随机数
+  #钻井价格的数�? 第i�? 第rdm�? 是按照正态分布的随机�?
   Dt.EGS[i, rdm] <- runif(1, min = Dt.EGS.min, max = Dt.EGS.max)
   Dt.well <- runif(1, min = Dt.well.min, max = Dt.well.max)
 
@@ -194,7 +194,7 @@ for (i in 1:nz)
 
 
 
-  #下面开始计算 heat credit
+  #下面开始计�? heat credit
   #heat credit
   E.DH0 <- (1 - eta.el) * E.th
   #因为L是一个数组，所以这里采用了三维
@@ -212,7 +212,7 @@ for (i in 1:nz)
   En.DH[i, rdm,] <- E.DH[i, rdm,] * 1e-3 * 2500 * Dt.EGS[i, rdm]
   E.comb[i, rdm,] <- E.EGS[i, rdm] + En.DH[i, rdm,] / 3
   C.comb[i, rdm,] <- C.EGS[i, rdm] + C.DH[i, rdm,]
-  # 合并之后的价格
+  # 合并之后的价�?
   P.comb[i, rdm,] <- C.comb[i, rdm,] / E.comb[i, rdm,]
   }
 
@@ -230,12 +230,12 @@ for (i in 1:nz)
   costs.combL0_z <- array(NA, dim = c(nz, nL))
   price.combL0_z <- array(NA, dim = c(nz, nL))
   for (i in 1:nz) {
-    # median() 计算中位数
+    # median() 计算中位�?
     Pnet_z[i] <- median(E.el[i,])
     costs.well_z[i] <- median(C.well[i,])
     costs_z[i] <- median(C.EGS[i,])
     price_z[i] <- median(P.EGS[i,])
-    # median() 计算中位数
+    # median() 计算中位�?
     for (j in 1:nL) {
       E.combL0_z[i, j] <- median(E.comb[i,, j], na.rm = T)
       costs.combL0_z[i, j] <- median(C.comb[i,, j], na.rm = T)
@@ -244,12 +244,12 @@ for (i in 1:nz)
   }
 
   z <- seq(4, 9, 1)
-  #L转换为km为单位制的
+  #L转换为km为单位制�?
   d <- L * 1e-3 #km
   nd <- length(d) # 81 管道
-  nz <- length(z) # 6  钻井距离的区分
+  nz <- length(z) # 6  钻井距离的区�?
   #grid 的格式是 第一列是管道距离 第二列是打井深度
-  grid <- expand.grid(x = d, y = z) # 486行 两列
+  grid <- expand.grid(x = d, y = z) # 486�? 两列
 
   grid.ind <- expand.grid(i = seq(nd), j = seq(nz))
   npt <- nrow(grid)
@@ -263,13 +263,13 @@ for (i in 1:nz)
     LCOE0.gg[pt] <- price_z[i]
     LCOEcredit.gg[pt] <- price.combL0_z[i, j]
   }
-  # 把他们合并在一起
+  # 把他们合并在一�?
   LCOE.gg <- data.frame(grid, P_standard = LCOE0.gg * 1e2, P_heatcredit = LCOEcredit.gg * 1e2)
   # 得到价格
 
 
 
-  #在这里开始计算风险
+  #在这里开始计算风�?
   ##################################### RISK PART #########################################
 
   #FUNCTIONS
@@ -367,7 +367,7 @@ for (i in 1:nz)
       #		indhigh <- which(int > intensity[i]+3*sigma[i])
       #		if(length(indlow) != 0) Pr_exceed[indlow] <- 1
       #		if(length(indhigh) != 0) Pr_exceed[indhigh] <- 0
-      # 计算累积分布函数 即分布函数
+      # 计算累积分布函数 即分布函�?
       if (distrib == "normal") Pr_exceed <- 1 - ptnorm(int, mean = intensity[i], sd = sigma,
                                                   intensity[i] - nsigma * sigma, intensity[i] + nsigma * sigma)
       rate_mi[i,] <- rate[i] * Pr_exceed
@@ -414,15 +414,19 @@ for (i in 1:nz)
   a <- c(-2.6, -3.2, -2.0, -1.4, -2.4, -3.8, -3.1, -0.5, -0.9, 0.1, -4.2, -2.8, -1.6)
   b <- c(0.7, 0.8, 1.4, 0.9, 1.1, 2.2, 1.8, 1.1, 0.8, 1.6, 1.1, 0.8, 1.0)
   nsite <- length(a) # 13
-  inti <- seq(2, 12, .1) 
+  inti <- seq(2, 12, .1)
   ni <- length(inti) # 101
-  nIPE <- 4 
+  nIPE <- 4
   #13,4,6,81,101
   hazcurve <- array(NA, dim = c(nsite, nIPE, nz, nd, ni))
-  for (i in 1:nsite) #13
-    for (j in 1:nIPE) #4
-      for (k in 1:nz) #6
-        for (l in 1:nd) { #81
+  for (i in 1:nsite)
+  #13
+    for (j in 1:nIPE)
+  #4
+      for (k in 1:nz)
+  #6
+        for (l in 1:nd) {
+          #81
           rate <- abs(diff(10 ^ (a[i] - b[i] * mi) * V))
           dhyp <- sqrt(z[k] ^ 2 + d[l] ^ 2)
           if (j == 1) Int <- IPE1(mi, dhyp)
@@ -431,11 +435,12 @@ for (i in 1:nz)
           if (j == 4) Int <- IPE4(mi, dhyp)
           hazcurve[i, j, k, l,] <- fct_hazardcurve(rate, Int$median, Int$sigma, nsigma, inti, "normal")$Pr
         }
-  #计算死亡率
+  #计算死亡�?
   Vi <- c(0.4, 0.6, 0.75, 0.9) # class D, C, B, A
 
   nVi <- length(Vi) #4
-  MDGval <- numeric(nVi * ni); #4*101
+  MDGval <- numeric(nVi * ni);
+  #4*101
   dim(MDGval) <- c(nVi, ni)
   DG_pr <- numeric(nVi * ni * 6);
   dim(DG_pr) <- c(nVi, ni, 6)
@@ -449,7 +454,7 @@ for (i in 1:nz)
       Deathval[i, j] <- 0.00001 * DG_pr[i, j, (2 + 1)] + 0.00002 * DG_pr[i, j, (3 + 1)] +
     0.0002 * DG_pr[i, j, (4 + 1)] + 0.1 * DG_pr[i, j, (5 + 1)]
     }
-  #死亡率计算完成
+  #死亡率计算完�?
 
   safety.Pr <- 1e-6
   safety.Pr2 <- 1e-5
@@ -505,8 +510,10 @@ for (i in 1:nz)
   Paverse21 <- array(NA, dim = c(nz, nd))
   Paverse31 <- array(NA, dim = c(nz, nd))
   Paverse41 <- array(NA, dim = c(nz, nd))
-  for (zz in 1:nz) { # 6
-    for (xx in 1:nd) { #81
+  for (zz in 1:nz) {
+    # 6
+    for (xx in 1:nd) {
+      #81
       E <- E.combL0_z[zz, xx]
       C.TLS <- costs.well_z[zz] + C.frac
       C <- costs.combL0_z[zz, xx]
@@ -535,8 +542,8 @@ for (i in 1:nz)
   LCOEaverse3_norm1.gg <- rep(NA, npt)
   LCOEaverse4_norm1.gg <- rep(NA, npt)
   for (pt in 1:npt) {
-    j <- grid.ind$i[pt] # 80个 1：80
-    i <- grid.ind$j[pt] # 80个 1:6
+    j <- grid.ind$i[pt] # 80�? 1�?80
+    i <- grid.ind$j[pt] # 80�? 1:6
     LCOEaverse1_norm1.gg[pt] <- Paverse11[i, j]
     LCOEaverse2_norm1.gg[pt] <- Paverse21[i, j]
     LCOEaverse3_norm1.gg[pt] <- Paverse31[i, j]
@@ -626,17 +633,17 @@ for (i in 1:nz)
 
 
   pdf(paste(wd, "/", figd, "/figNEW_newLCOE_optimalsiting.pdf", sep = ""))
-  g11 <- ggplot(data = LCOE.gg, aes(x = x, y = -y)) + #先给出坐标
+  g11 <- ggplot(data = LCOE.gg, aes(x = x, y = -y)) + #先给出坐�?
   #创建栅格
   geom_raster(aes(fill = Pa11)) +
   # 标图不同值得颜色
   scale_fill_gradient2(low = "red", mid = "white", high = "blue", midpoint = 6, limits = c(pmin, pmax), na.value = "lightgrey") +
-  #3d曲面的2d轮廓
+  #3d曲面�?2d轮廓
   geom_contour(aes(z = Pa11), breaks = c(price_target), col = "black") +
   # 绘制参考线
   geom_hline(yintercept = z_target, lty = "dashed") +
   geom_vline(xintercept = c(d11min, d11max), lty = "dashed") +
-  
+
   theme_minimal() +
   theme(legend.position = "none") +
   labs(title = "LCOE (averse), class D", x = "d (km)", y = "z (km)", fill = expression(P[averse]))
@@ -718,7 +725,7 @@ for (i in 1:nz)
 
 
   # 综合计算
-  # 计算最优位置
+  # 计算最优位�?
   ### synthetic exposure ###
   #log(rank) <- 10.53-1.005*log(size)    #Gabaix 1999 Zipf law for cities
   # 排序1:10
@@ -746,17 +753,19 @@ for (i in 1:nz)
   nsim <- 100
   # 目标电力 求和(size * 5 *1e-3)
   target_power <- sum(size * house_power * 1e-3) #MW
-  # 可达电力 2行100列
+  # 可达电力 2�?100�?
   reached_power <- array(NA, dim = c(2, nsim))
 
-  for (sim in 48:nsim) { # 从 48到100
+  for (sim in 48:nsim) {
+    # �? 48�?100
     x <- numeric(nbuilding)
     y <- numeric(nbuilding)
-    # 确定每一个x,y的取值
+    # 确定每一个x,y的取�?
     settlementID <- unlist(sapply(1:10, function(i) rep(i, size[i])))
     k <- 1
-    for (i in 1:nsettlement) { # 10
-    # 正态分布随机取
+    for (i in 1:nsettlement) {
+      # 10
+      # 正态分布随机取
       x[k] <- runif(1, min = xmin, max = xmax)
       y[k] <- runif(1, min = ymin, max = ymax)
       k <- k + 1
@@ -772,9 +781,11 @@ for (i in 1:nz)
     yi <- ymin + seq(ymax - ymin);
     ny <- length(yi) # 100
 
-    sectorID <- LCOEmap1 <- LCOEmap2 <- dens <- array(NA, dim = c(nx, ny)) # 100行 200列
-    for (i in 1:nx) { # 100
-      for (j in 1:ny) { # 200
+    sectorID <- LCOEmap1 <- LCOEmap2 <- dens <- array(NA, dim = c(nx, ny)) # 100�? 200�?
+    for (i in 1:nx) {
+      # 100
+      for (j in 1:ny) {
+        # 200
         indin <- which(x >= xi[i] - .5 & x < xi[i] + .5 & y >= yi[j] - .5 & y < yi[j] + .5)
         dens[i, j] <- length(indin)
         # 模拟了几个城市的距离
@@ -791,8 +802,10 @@ for (i in 1:nz)
     x_list <- y_list <- siting_list1 <- siting_list2 <- sector_list <-
     LCOE_list1 <- LCOE_list2 <- nEGS_list <- dens_list <- numeric(nx * ny)
     k <- 1
-    for (i in 1:nx) { # 100
-      for (j in 1:ny) { # 200
+    for (i in 1:nx) {
+      # 100
+      for (j in 1:ny) {
+        # 200
         x_list[k] <- xi[i]
         y_list[k] <- yi[j]
         sector_list[k] <- sectorID[i, j]
@@ -803,7 +816,7 @@ for (i in 1:nz)
         k <- k + 1
       }
     }
-    #把数据写入文件
+    #把数据写入文�?
     siting.map <- data.frame(x = x_list, y = y_list, dens = dens_list, sector = sector_list, nEGS = nEGS_list,
                            LCOE1 = LCOE_list1, LCOE2 = LCOE_list2)
 
@@ -813,8 +826,8 @@ for (i in 1:nz)
     pmin <- 4
     pmax <- 10
     pdf(paste(wd, "/", figd, "/figNEW_newLCOE_optimalsiting_classB_", sim, ".pdf", sep = ""))
-    # A,B是同类型的
-    # 看的是距离和价格的关系
+    # A,B是同类型�?
+    # 看的是距离和价格的关�?
     gA <- ggplot(data = data.frame(x = d, y = Paverse31[z == -z_target,] * 1e2)) +
     geom_line(aes(x = x, y = y)) +
     geom_vline(xintercept = c(d31min, d31max), lty = "dashed") +
@@ -832,8 +845,8 @@ for (i in 1:nz)
     theme_minimal() +
     theme(legend.position = "none") +
     labs(title = "IR = 10 mmt", x = "d (km)", y = "LCOE (c/kWh)")
-    # C,D是同类型的
-    # 聚类的画法
+    # C,D是同类型�?
+    # 聚类的画�?
     # 画出建筑群的位置
     gC <- ggplot(data = siting.map, aes(x = x, y = y)) +
     geom_raster(aes(fill = LCOE1)) +
@@ -850,7 +863,7 @@ for (i in 1:nz)
     theme_minimal() +
     theme(legend.position = "none") +
     labs(title = "LCOE", x = "x (km)", y = "y (km)")
-    # E,F是同类型的
+    # E,F是同类型�?
     gE <- ggplot(data = siting.map, aes(x = x, y = y)) +
     geom_raster(aes(fill = sector)) +
     scale_color_brewer(palette = "Spectral") +
@@ -871,11 +884,12 @@ for (i in 1:nz)
 
     # 自由市场方法
     ######################### free market approach ########################
-    
-    count_circle <- function(X, map, radius) { # 数这个圆的数量 #半径也是输入的
-      # nEGS是建立EGS的数量
-      nEGS <- nrow(X) 
-      # ns是map下sector中的最大值
+
+    count_circle <- function(X, map, radius) {
+      # 数这个圆的数�? #半径也是输入�?
+      # nEGS是建立EGS的数�?
+      nEGS <- nrow(X)
+      # ns是map下sector中的最大�?
       ns <- max(map$sector)
 
       #how many times in circle per settlement
@@ -883,7 +897,8 @@ for (i in 1:nz)
       for (i in 1:nEGS) {
         #风险圆，得到了圆的数据框
         circle_risk <- circle(c(X$x[i], X$y[i]), radius)
-        for (j in 1:ns) { #
+        for (j in 1:ns) {
+          #
           indb <- which(map$sector == j & is.na(map$LCOE1) == T)
           settlement_coords <- data.frame(x = map$x[indb], y = map$y[indb])
           indIN <- inpip(settlement_coords, circle_risk)
@@ -891,7 +906,7 @@ for (i in 1:nz)
         }
       }
       indtoorisky <- which(count_inriskcircle_persettlement > 1)
-      # 如果这个等于0，就返回“go”，如果不等于0，就返回“nogo”
+      # 如果这个等于0，就返回“go”，如果不等�?0，就返回“nogo�?
       if (length(indtoorisky) == 0) res <- "go" else res <- "nogo"
       return(res)
     }
@@ -913,15 +928,16 @@ for (i in 1:nz)
     radius <- radius1 # 34
     indloc_tmp <- which(siting.map1$LCOE1 == min(siting.map1$LCOE1)) #返回下标
     # 向上取整
-    rdm <- ceiling(runif(1) * length(indloc_tmp))# 随机的一个数字
+    rdm <- ceiling(runif(1) * length(indloc_tmp)) # 随机的一个数�?
     indloc <- indloc_tmp[rdm]
 
     #以上可以得到等与最小值的下标
     # X_EGS写入data_frame x, y
     X_EGS <- data.frame(x = siting.map1$x[indloc], y = siting.map1$y[indloc])
-    # EGSsector 是这个下标下的数字
+    # EGSsector 是这个下标下的数�?
     EGSsector <- siting.map1$sector[indloc]
-    for (i in 2:nEGS.max) { # 2:38
+    for (i in 2:nEGS.max) {
+      # 2:38
       # 进行到哪一步了
       print(paste(i, "/", nEGS.max))
       # 除过这里的值，其余的值小于其余最小的值得下标
@@ -930,7 +946,7 @@ for (i in 1:nz)
       indloc_tmp <- indloc_tmp[rdm]
 
       X_EGS_tmp <- rbind(X_EGS, data.frame(x = siting.map1$x[-indloc][indloc_tmp], y = siting.map1$y[-indloc][indloc_tmp]))
-      
+
       indloc <- c(indloc, seq(nrow(siting.map1))[-indloc][indloc_tmp])
       # 如果输出是nogo 且indloc的长度小于lim，在内部进行计算之后继续判断
       while (count_circle(X_EGS_tmp, siting.map, radius) == "nogo" & length(indloc) < lim) {
@@ -941,7 +957,7 @@ for (i in 1:nz)
         X_EGS_tmp <- rbind(X_EGS, data.frame(x = siting.map1$x[-indloc][indloc_tmp], y = siting.map1$y[-indloc][indloc_tmp]))
         indloc <- c(indloc, seq(nrow(siting.map1))[-indloc][indloc_tmp])
       }
-      # 如果输出为go，则结束，下一次循环即可
+      # 如果输出为go，则结束，下一次循环即�?
       if (count_circle(X_EGS_tmp, siting.map, radius) == "go") {
         X_EGS <- X_EGS_tmp
 
@@ -1083,7 +1099,7 @@ for (i in 1:nz)
 
     #extract settlements
     # 返回下标
-    indb <- which(map$sector == testID & is.na(map$LCOE1) == T) 
+    indb <- which(map$sector == testID & is.na(map$LCOE1) == T)
     Xsettlement <- data.frame(x = map$x[indb], y = map$y[indb], dens = map$dens[indb])
     nb <- sum(Xsettlement$dens)
     # 最大sector
@@ -1105,7 +1121,7 @@ for (i in 1:nz)
     }
     indtoorisky <- which(count_inriskcircle_persettlement > 1)
     if (length(indtoorisky) == 0) riskthreshold <- 0 else riskthreshold <- Inf
-    # 要让风险等于0 才是最优化的算法
+    # 要让风险等于0 才是最优化的算�?
 
     val <- (Power_settlement - sum(X[3,])) + riskthreshold
     return(val)
@@ -1116,7 +1132,7 @@ for (i in 1:nz)
   testID <- 2 # only for sector 2 for now
 
   ## PARAMETERS ##
-  # 去除唯一性
+  # 去除唯一�?
   nEGS <- unique(siting.map$nEGS[siting.map$sector == testID])
   if (safetynorm == 1) {
     indloc <- which(siting.map$sector == testID & siting.map$LCOE1 < price_target)
@@ -1135,14 +1151,14 @@ for (i in 1:nz)
   cost <- array(NA, dim = c(NP, ngen))
 
   ### init (gen = 1) ###
-  # 第一代
+  # 第一�?
   for (i in 1:NP) {
     rdm <- ceiling(runif(nEGS) * length(indloc))
     X_EGS[i, 1, 1,] <- siting.map$x[indloc][rdm] #x - random uniform in possible space
     X_EGS[i, 1, 2,] <- siting.map$y[indloc][rdm] #y - random uniform in possible space
     X_EGS[i, 1, 3,] <- rep(plant_power, nEGS) #power in MW - best option
     # 进化有问题，维度改变，不知道用的是谁
-    # 直接算出适应度函数，看是否符合条件
+    # 直接算出适应度函数，看是否符合条�?
     cost[i, 1] <- costfunction(X_EGS[1,,,], siting.map, testID, radius_risk)
   }
 
